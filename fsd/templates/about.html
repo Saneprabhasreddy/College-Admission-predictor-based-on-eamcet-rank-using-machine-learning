@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EAMCET Admission Predictor - About</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../static/style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <nav class="menu">
+      <ul>
+        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/about" class="active"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="/predict"><i class="fas fa-chart-line"></i> Predictor</a></li>
+        <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+      </ul>
+    </nav>
+    <div class="auth-buttons">
+      {% if session.user %}
+        <span class="user-welcome">Welcome, {{ session.user }}</span>
+        <form action="{{ url_for('logout') }}" method="post" style="display: inline;">
+          <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="btn-primary">Login</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="fade-in">
+    <section class="about">
+      <div class="about-container">
+        <h1><i class="fas fa-graduation-cap"></i> About College Admission Predictor</h1>
+        <p class="lead">
+          Welcome to the <strong>College Admission Predictor</strong>, your comprehensive guide to 
+          finding the perfect college match based on your EAMCET rank, category, and preferred branch.
+        </p>
+        
+        <div class="feature-section">
+          <h2><i class="fas fa-star"></i> Key Features</h2>
+          <ul class="feature-list">
+            <li>
+              <i class="fas fa-chart-pie"></i> 
+              <strong>Personalized Predictions:</strong> 
+              Get a tailored list of colleges based on your rank and category
+            </li>
+            <li>
+              <i class="fas fa-info-circle"></i> 
+              <strong>Comprehensive Details:</strong> 
+              Access essential information about college name, region, and fee structure
+            </li>
+            <li>
+              <i class="fas fa-code-branch"></i> 
+              <strong>Branch-Specific Insights:</strong> 
+              Find the best options for your preferred engineering branch
+            </li>
+          </ul>
+        </div>
+
+        <div class="benefits-section">
+          <h2><i class="fas fa-check-circle"></i> Benefits</h2>
+          <ul class="benefits-list">
+            <li>
+              <i class="fas fa-clock"></i> 
+              Save valuable time by filtering through hundreds of colleges instantly
+            </li>
+            <li>
+              <i class="fas fa-brain"></i> 
+              Make informed decisions with accurate, data-driven predictions
+            </li>
+            <li>
+              <i class="fas fa-map-marker-alt"></i> 
+              Plan your future with confidence using detailed college insights
+            </li>
+          </ul>
+        </div>
+
+        <div class="target-section">
+          <h2><i class="fas fa-users"></i> Who Can Benefit?</h2>
+          <ul>
+            <li>EAMCET exam participants seeking college admissions</li>
+            <li>Engineering aspirants in Andhra Pradesh</li>
+            <li>Parents and counselors guiding students</li>
+            <li>Students looking for branch-specific college recommendations</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared JS -->
+  <script src="script.js"></script>
+</body>
+</html>

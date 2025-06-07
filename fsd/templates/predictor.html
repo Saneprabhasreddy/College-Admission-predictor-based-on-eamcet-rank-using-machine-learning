@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EAMCET Admission Predictor - Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="../static/style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <nav class="menu">
+      <ul>
+        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/about"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="/predict" class="active"><i class="fas fa-chart-line"></i> Predictor</a></li>
+        <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+      </ul>
+    </nav>
+    <div class="auth-buttons">
+      {% if session.user %}
+        <span class="user-welcome">Welcome, {{ session.user }}</span>
+        <form action="{{ url_for('logout') }}" method="post" style="display: inline;">
+          <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </form>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="fade-in">
+    <section class="predictor-section">
+      <div class="container">
+        <div class="card">
+          <h2><i class="fas fa-chart-bar"></i> College Predictor</h2>
+          <form id="predictor-form" class="predictor-form">
+            <div class="form-group">
+              <label for="rank"><i class="fas fa-trophy"></i> Your Rank</label>
+              <input type="number" id="rank" name="rank" placeholder="Enter your EAMCET rank" min="1" required />
+            </div>
+
+            <div class="form-group">
+              <label for="categoryGender"><i class="fas fa-users"></i> Category</label>
+              <select id="categoryGender" name="categoryGender" required>
+                <option value="">-- Select Category --</option>
+                <option value="OC_BOYS">OC Boys</option>
+                <option value="OC_GIRLS">OC Girls</option>
+                <option value="SC_BOYS">SC Boys</option>
+                <option value="SC_GIRLS">SC Girls</option>
+                <option value="BCA_BOYS">BCA Boys</option>
+                <option value="BCA_GIRLS">BCA Girls</option>
+                <option value="BCB_BOYS">BCB Boys</option>
+                <option value="BCB_GIRLS">BCB Girls</option>
+                <option value="BCD_BOYS">BCD Boys</option>
+                <option value="BCD_GIRLS">BCD Girls</option>
+                <option value="BCE_BOYS">BCE Boys</option>
+                <option value="BCE_GIRLS">BCE Girls</option>
+                <option value="OC_EWS_BOYS">OC EWS Boys</option>
+                <option value="OC_EWS_GIRLS">OC EWS Girls</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="branchCode"><i class="fas fa-code-branch"></i> Branch</label>
+              <select id="branchCode" name="branchCode" required>
+                <option value="">-- Select Branch --</option>
+                <option value="CSE">Computer Science</option>
+                <option value="ECE">Electronics</option>
+                <option value="EEE">Electrical</option>
+                <option value="MEC">Mechanical</option>
+                <option value="CIV">Civil</option>
+                <option value="CSD">Computer Science and Design</option>
+                <option value="CSM">Computer Science and Mathematics</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="inst_reg">Select Institute Region:</label>
+              <select id="inst_reg" name="inst_reg" required>
+                <option value="">-- Select Region --</option>
+                <option value="SVU">SVU</option>
+                <option value="AU">AU</option>
+                <option value="SW">SW</option>
+              </select>
+            </div>
+
+            <button type="submit" class="predict-btn">
+              <i class="fas fa-search"></i> Predict Colleges
+            </button>
+          </form>
+        </div>
+
+        <div id="prediction-results" class="prediction-results" style="display: none;">
+          <!-- Results will be populated here -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Enhanced prediction form handling
+    document.getElementById("predictor-form").addEventListener("submit", async function(event) {
+      event.preventDefault();
+      
+      const submitButton = this.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Predicting...';
+
+      try {
+        const formData = new FormData(this);
+        const response = await fetch("/predict", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+        const resultsDiv = document.getElementById("prediction-results");
+        
+        if (response.ok) {
+          let resultHTML = `
+            <h3><i class="fas fa-university"></i> Predicted Colleges</h3>
+            <div class="college-list">
+          `;
+          
+          data.data.forEach(college => {
+            resultHTML += `
+              <div class="college-card fade-in">
+                <h4>${college["NAME OF THE INSTITUTION"]}</h4>
+                <p><strong>Code:</strong> ${college["INSTCODE"]}</p>
+                <p><strong>Fee:</strong> ₹${college["COLLEGE FEE"].toLocaleString()}</p>
+                <p><strong>Type:</strong> ${college["TYPE"]}</p>
+              </div>
+            `;
+          });
+          
+          resultHTML += '</div>';
+          resultsDiv.innerHTML = resultHTML;
+          resultsDiv.style.display = 'block';
+          resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          throw new Error(data.error || 'Failed to fetch predictions');
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Failed to fetch prediction results. Please try again.");
+      } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = '<i class="fas fa-search"></i> Predict Colleges';
+      }
+    });
+  </script>
+</body>
+</html>
